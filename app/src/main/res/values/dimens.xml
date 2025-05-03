@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_default">16dp</dimen>
+    <dimen name="BTN_margin">10dp</dimen>
+    <dimen name="heart_dimens">40dp</dimen>
+    <dimen name="BTN_dimens">90dp</dimen>
+</resources>
