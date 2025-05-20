@@ -6,7 +6,8 @@ import kotlin.random.Random
 class GameManager(
     val maxLives: Int = 3,
     val rows: Int = 7,
-    val lanes: Int = 3
+    val lanes: Int = 5
+
 ) {
     enum class RoadCellType { CAR, EMPTY, ROCK }
     enum class Direction { LEFT, RIGHT }
@@ -124,7 +125,7 @@ class GameManager(
 
         // Generate new rocks in top row
         for (l in 0 until lanes) {
-            if (rocksInTopRow < 2 && Random.nextInt(10) == 0) {
+            if (rocksInTopRow < lanes - 1 && Random.nextInt(10) == 0) {
                 road[0][l].type = RoadCellType.ROCK
                 rocksInTopRow++
             }
