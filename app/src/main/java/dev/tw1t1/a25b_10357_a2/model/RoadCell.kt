@@ -36,6 +36,7 @@ class RoadCell {
         imageResource = when (type) {
             RoadCellType.CAR -> R.drawable.car
             RoadCellType.ROCK -> R.drawable.rock
+            RoadCellType.COIN -> R.drawable.coin
             RoadCellType.EMPTY -> 0
         }
     }

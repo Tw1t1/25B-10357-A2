@@ -9,7 +9,7 @@ class GameManager(
     val lanes: Int = 5
 
 ) {
-    enum class RoadCellType { CAR, EMPTY, ROCK }
+    enum class RoadCellType { CAR, EMPTY, ROCK , COIN }
     enum class Direction { LEFT, RIGHT }
     enum class GameStatus { OK, CRASHED, BLOCKED, GAME_OVER }
 
@@ -22,6 +22,8 @@ class GameManager(
 
     var carLane: Int = lanes / 2
         private set
+
+    var score: Int = 0
 
     val road: Array<Array<RoadCell>> = Array(rows) {
         Array(lanes) { RoadCell() }
@@ -43,6 +45,10 @@ class GameManager(
         return if (isGameOver()) GameStatus.GAME_OVER else GameStatus.CRASHED
     }
 
+    private fun addToScore() {
+        score += 10
+    }
+
     fun reset() {
         // Clear road
         for (r in rows - 1 downTo 0) {
@@ -54,6 +60,7 @@ class GameManager(
         // Reset car and lives
         placeCar()
         livesRemaining = maxLives
+        score = 0
     }
 
     fun moveCar(direction: Direction): GameStatus {
@@ -70,11 +77,16 @@ class GameManager(
         // Check for collision with rock
         val targetLane = carLane - 1
         val hasRock = road[rows - 1][targetLane].type == RoadCellType.ROCK
+        val hasCoin = road[rows - 1][targetLane].type == RoadCellType.COIN
 
         // Move car left
         road[rows - 1][targetLane].type = RoadCellType.CAR
         road[rows - 1][carLane].type = RoadCellType.EMPTY
         carLane = targetLane
+
+        // Add to score if there is a coin
+        if (hasCoin)
+            addToScore()
 
         // Return appropriate status
         return if (hasRock) carCollision() else GameStatus.OK
@@ -87,11 +99,16 @@ class GameManager(
         // Check for collision with rock
         val targetLane = carLane + 1
         val hasRock = road[rows - 1][targetLane].type == RoadCellType.ROCK
+        val hasCoin = road[rows - 1][targetLane].type == RoadCellType.COIN
 
         // Move car right
         road[rows - 1][targetLane].type = RoadCellType.CAR
         road[rows - 1][carLane].type = RoadCellType.EMPTY
         carLane = targetLane
+
+        // Add to score if there is a coin
+        if (hasCoin)
+            addToScore()
 
         // Return appropriate status
         return if (hasRock) carCollision() else GameStatus.OK
@@ -104,16 +121,22 @@ class GameManager(
         // Process existing road cells (bottom to top)
         for (r in rows - 1 downTo 0) {
             for (l in 0 until lanes) {
-                if (road[r][l].type == RoadCellType.ROCK) {
+                if (road[r][l].type == RoadCellType.ROCK || road[r][l].type == RoadCellType.COIN) {
                     if (r < rows - 1) {
                         val cellBelow = road[r + 1][l]
 
-                        // Check if rock would hit car
+                        // Check if it (rock / coin) would hit the car
                         if (cellBelow.type == RoadCellType.CAR) {
-                            status = carCollision()
+                            if (road[r][l].type == RoadCellType.ROCK)   // its a rock
+                                status = carCollision()
+                            else    // its a coin
+                                addToScore()
                         } else {
-                            // Move rock down
-                            cellBelow.type = RoadCellType.ROCK
+                            // Move it (rock / coin) down
+                            if (road[r][l].type == RoadCellType.ROCK)   // its a rock
+                                cellBelow.type = RoadCellType.ROCK
+                            else    // its a coin
+                                cellBelow.type = RoadCellType.COIN
                         }
                     }
 
@@ -128,6 +151,13 @@ class GameManager(
             if (rocksInTopRow < lanes - 1 && Random.nextInt(10) == 0) {
                 road[0][l].type = RoadCellType.ROCK
                 rocksInTopRow++
+            }
+        }
+
+        // Generate new coins in top row
+        for (l in 0 until lanes) {
+            if (road[0][l].type == RoadCellType.EMPTY && Random.nextInt(30) == 0) {
+                road[0][l].type = RoadCellType.COIN
             }
         }
 
