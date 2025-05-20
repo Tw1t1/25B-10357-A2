@@ -8,6 +8,7 @@ import android.os.Vibrator
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import dev.tw1t1.a25b_10357_A2.logic.GameManager
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var backgroundImage: ShapeableImageView
     private lateinit var heartImages: Array<ShapeableImageView>
+    private lateinit var scoreLabel: TextView
     private lateinit var roadImages: Array<Array<ShapeableImageView>>
     private lateinit var leftButton: FloatingActionButton
     private lateinit var rightButton: FloatingActionButton
@@ -81,6 +83,8 @@ class MainActivity : AppCompatActivity() {
         findViewById<LinearLayoutCompat>(R.id.main_LLC_hearts).run {
             heartImages = Array(childCount) { i -> getChildAt(i) as ShapeableImageView }
         }
+
+        scoreLabel = findViewById(R.id.main_LBL_score)
 
         // Setup road matrix
         val roadLayout = findViewById<LinearLayoutCompat>(R.id.main_LLC_road)
@@ -148,5 +152,8 @@ class MainActivity : AppCompatActivity() {
         heartImages.forEachIndexed { index, heart ->
             heart.visibility = if (index < gameManager.livesRemaining) View.VISIBLE else View.INVISIBLE
         }
+
+        // Update score
+        scoreLabel.setText(gameManager.score.toString())
     }
 }
