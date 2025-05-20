@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme._25B10357A1" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme._25B10357A2" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
@@ -17,5 +17,5 @@
         </item>
     </style>
 
-    <style name="Theme._25B10357A1" parent="Base.Theme._25B10357A1" />
+    <style name="Theme._25B10357A2" parent="Base.Theme._25B10357A2" />
 </resources>

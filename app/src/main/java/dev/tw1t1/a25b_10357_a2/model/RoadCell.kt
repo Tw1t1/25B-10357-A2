@@ -1,7 +1,7 @@
-package dev.tw1t1.a25b_10357_a1.model
+package dev.tw1t1.a25b_10357_A2.model
 
-import dev.tw1t1.a25b_10357_a1.R
-import dev.tw1t1.a25b_10357_a1.logic.GameManager.RoadCellType
+import dev.tw1t1.a25b_10357_A2.R
+import dev.tw1t1.a25b_10357_A2.logic.GameManager.RoadCellType
 
 /**
  * Represents a cell in the game's road grid.

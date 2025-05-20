@@ -1,6 +1,6 @@
-package dev.tw1t1.a25b_10357_a1.logic
+package dev.tw1t1.a25b_10357_A2.logic
 
-import dev.tw1t1.a25b_10357_a1.model.RoadCell
+import dev.tw1t1.a25b_10357_A2.model.RoadCell
 import kotlin.random.Random
 
 class GameManager(

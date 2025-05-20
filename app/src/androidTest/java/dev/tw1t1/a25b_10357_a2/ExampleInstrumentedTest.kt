@@ -1,4 +1,4 @@
-package dev.tw1t1.a25b_10357_a1
+package dev.tw1t1.a25b_10357_A2
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

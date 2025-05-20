@@ -1,4 +1,4 @@
-package dev.tw1t1.a25b_10357_a1
+package dev.tw1t1.a25b_10357_A2
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -10,9 +10,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import dev.tw1t1.a25b_10357_a1.logic.GameManager
-import dev.tw1t1.a25b_10357_a1.logic.GameManager.GameStatus
-import dev.tw1t1.a25b_10357_a1.logic.GameManager.Direction
+import dev.tw1t1.a25b_10357_A2.logic.GameManager
+import dev.tw1t1.a25b_10357_A2.logic.GameManager.GameStatus
+import dev.tw1t1.a25b_10357_A2.logic.GameManager.Direction
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.imageview.ShapeableImageView
 import java.util.Timer
