@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
 }
+
 
 android {
     namespace = "dev.tw1t1.a25b_10357_A2"
@@ -47,4 +49,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     // Glide:
     implementation(libs.glide)
+    // For Google Maps
+    implementation(libs.play.services.maps)
+    // For Google Play Services Location
+    implementation(libs.play.services.location)
 }

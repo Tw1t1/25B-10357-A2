@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="dev.tw1t1.a25b_10357_a2.MainActivity">
+    tools:context="dev.tw1t1.a25b_10357_a2.GameActivity">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/main_IMG_background"
@@ -342,20 +342,31 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/main_LLC_score"
-        android:layout_width="70dp"
+        android:layout_width="140dp"
         android:layout_height="@dimen/heart_dimens"
         android:layout_marginEnd="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_default"
         android:layout_alignParentEnd="true"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/main_LBL_score"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="10dp"
             android:textSize="32sp"
             android:textAlignment="center"
-            android:textColor="@color/green"
+            />
+
+        <TextView
+            android:id="@+id/main_LBL_distance"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="10dp"
+            android:textSize="32sp"
+            android:textAlignment="center"
             />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

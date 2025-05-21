@@ -6,15 +6,16 @@ import kotlin.random.Random
 class GameManager(
     val maxLives: Int = 3,
     val rows: Int = 7,
-    val lanes: Int = 5
-
+    val lanes: Int = 5,
+    var delay: Long = SLOW_DELAY
 ) {
     enum class RoadCellType { CAR, EMPTY, ROCK , COIN }
     enum class Direction { LEFT, RIGHT }
     enum class GameStatus { OK, CRASHED, BLOCKED, GAME_OVER }
 
     companion object {
-        const val DELAY: Long = 1000
+        const val FAST_DELAY: Long = 500
+        const val SLOW_DELAY: Long = 1000
     }
 
     var livesRemaining: Int = maxLives
@@ -24,6 +25,8 @@ class GameManager(
         private set
 
     var score: Int = 0
+
+    var distance: Int = 0
 
     val road: Array<Array<RoadCell>> = Array(rows) {
         Array(lanes) { RoadCell() }
@@ -61,6 +64,11 @@ class GameManager(
         placeCar()
         livesRemaining = maxLives
         score = 0
+        distance = 0
+    }
+
+    fun setDifficulty(isFast: Boolean) {
+        delay = if (isFast) FAST_DELAY else SLOW_DELAY
     }
 
     fun moveCar(direction: Direction): GameStatus {
@@ -117,6 +125,7 @@ class GameManager(
     fun moveRoad(): GameStatus {
         var status = GameStatus.OK
         var rocksInTopRow = 0
+        distance += 1
 
         // Process existing road cells (bottom to top)
         for (r in rows - 1 downTo 0) {
