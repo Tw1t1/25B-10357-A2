@@ -3,6 +3,7 @@ package dev.tw1t1.a25b_10357_A2
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.Build
@@ -115,10 +116,12 @@ class MainActivity : AppCompatActivity() {
             GameStatus.BLOCKED -> deviceVibrate(50)
             GameStatus.CRASHED -> {
                 deviceVibrate(400)
+                playSound()
                 showToast("You Crashed!")
             }
             GameStatus.GAME_OVER -> {
                 deviceVibrate(700)
+                playSound()
                 showToast("Game Over, try again ><")
             }
             GameStatus.OK -> {} // No action needed
@@ -138,6 +141,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun playSound() {
+        val mediaPlayer = MediaPlayer.create(this, R.raw.crash_sound)
+        mediaPlayer.setOnCompletionListener { mp -> mp.release() }
+        mediaPlayer.start()
     }
 
     private fun updateUI() {
