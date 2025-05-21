@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "dev.tw1t1.a25b_10357_A2"
+    namespace = "dev.tw1t1.a25b_10357_a2"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "dev.tw1t1.a25b_10357_A2"
+        applicationId = "dev.tw1t1.a25b_10357_a2"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

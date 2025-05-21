@@ -1,4 +1,4 @@
-package dev.tw1t1.a25b_10357_A2
+package dev.tw1t1.a25b_10357_a2
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -12,11 +12,13 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import dev.tw1t1.a25b_10357_A2.logic.GameManager
-import dev.tw1t1.a25b_10357_A2.logic.GameManager.GameStatus
-import dev.tw1t1.a25b_10357_A2.logic.GameManager.Direction
+import dev.tw1t1.a25b_10357_a2.logic.GameManager
+import dev.tw1t1.a25b_10357_a2.logic.GameManager.GameStatus
+import dev.tw1t1.a25b_10357_a2.logic.GameManager.Direction
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.imageview.ShapeableImageView
+import dev.tw1t1.a25b_10357_A2.R
+import dev.tw1t1.a25b_10357_a2.input.TiltController
 import java.util.Timer
 import java.util.TimerTask
 
@@ -28,7 +30,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var roadImages: Array<Array<ShapeableImageView>>
     private lateinit var leftButton: FloatingActionButton
     private lateinit var rightButton: FloatingActionButton
+    private lateinit var tiltController: TiltController
     private lateinit var gameManager: GameManager
+
+    private var tiltControlEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +50,19 @@ class MainActivity : AppCompatActivity() {
 
         startGameLoop()
         updateUI()
+    }
+
+    // Start/stop tilt sensing according to activity lifecycle
+    override fun onResume() {
+        super.onResume()
+        if (tiltControlEnabled) {
+            tiltController.startListening()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        tiltController.stopListening()
     }
 
     private fun loadBackgroundImage() {
@@ -79,6 +97,7 @@ class MainActivity : AppCompatActivity() {
         backgroundImage = findViewById(R.id.main_IMG_background)
         leftButton = findViewById(R.id.main_FAB_left)
         rightButton = findViewById(R.id.main_FAB_right)
+        tiltController = TiltController(this)
 
         // Setup hearts array
         findViewById<LinearLayoutCompat>(R.id.main_LLC_hearts).run {
@@ -102,6 +121,19 @@ class MainActivity : AppCompatActivity() {
         // Set button click listeners
         leftButton.setOnClickListener { moveCar(Direction.LEFT) }
         rightButton.setOnClickListener { moveCar(Direction.RIGHT) }
+
+        // Set tilt action callbacks
+        tiltController.onTiltLeft = {
+            if (tiltControlEnabled) {
+                moveCar(Direction.LEFT)
+            }
+        }
+
+        tiltController.onTiltRight = {
+            if (tiltControlEnabled) {
+                moveCar(Direction.RIGHT)
+            }
+        }
     }
 
     private fun moveCar(direction: Direction) {
@@ -147,6 +179,15 @@ class MainActivity : AppCompatActivity() {
         val mediaPlayer = MediaPlayer.create(this, R.raw.crash_sound)
         mediaPlayer.setOnCompletionListener { mp -> mp.release() }
         mediaPlayer.start()
+    }
+
+    fun toggleTiltControls(enabled: Boolean) {
+        tiltControlEnabled = enabled
+        if (enabled) {
+            tiltController.startListening()
+        } else {
+            tiltController.stopListening()
+        }
     }
 
     private fun updateUI() {
