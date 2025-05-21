@@ -208,6 +208,7 @@ class GameActivity : AppCompatActivity() {
         scoreLabel = findViewById(R.id.main_LBL_score)
         distanceLabel = findViewById(R.id.main_LBL_distance)
 
+
         // Setup road matrix
         val roadLayout = findViewById<LinearLayoutCompat>(R.id.main_LLC_road)
         val lanes = roadLayout.childCount
@@ -236,7 +237,39 @@ class GameActivity : AppCompatActivity() {
                 moveCar(Direction.RIGHT)
             }
         }
+
+        // Add forward/backward tilt callbacks for speed control
+        tiltController.onTiltForward = {
+            if (tiltControlEnabled) {
+                changeSpeed(true)
+            }
+        }
+
+        tiltController.onTiltBackward = {
+            if (tiltControlEnabled) {
+                changeSpeed(false)
+            }
+        }
     }
+
+    // New function to change game speed
+    private fun changeSpeed(increase: Boolean) {
+        val changed = if (increase) {
+            gameManager.increaseSpeed()
+        } else {
+            gameManager.decreaseSpeed()
+        }
+
+        if (changed) {
+            // Restart game loop with new delay
+            startGameLoop()
+
+            // Give feedback to the user
+            val message = if (increase) "Speed increased!" else "Speed decreased!"
+            showToast(message)
+        }
+    }
+
 
     private fun moveCar(direction: Direction) {
         gameManager.moveCar(direction).let { status ->
@@ -318,6 +351,7 @@ class GameActivity : AppCompatActivity() {
 
         // Update distance
         distanceLabel.text = gameManager.distance.toString()
+
     }
 
     // This function is called when a game ends to save the record

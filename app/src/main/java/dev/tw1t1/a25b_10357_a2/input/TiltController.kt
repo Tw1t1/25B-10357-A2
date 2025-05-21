@@ -14,11 +14,14 @@ class TiltController(private val context: Context) : SensorEventListener {
     private var isRegistered = false
 
     // Sensitivity threshold - adjust these values based on how sensitive you want the controls to be
-    private val TILT_THRESHOLD = 2.5f
+    private val TILT_THRESHOLD = 2.0f
+    private val TILT_FORWARD_BACKWARD_THRESHOLD = 2.0f  // May need adjustment for comfortable play
 
     // Callback interfaces
     var onTiltLeft: (() -> Unit)? = null
     var onTiltRight: (() -> Unit)? = null
+    var onTiltForward: (() -> Unit)? = null  // Added callback for tilting forward
+    var onTiltBackward: (() -> Unit)? = null // Added callback for tilting backward
 
     // Debounce handling - to prevent multiple triggers when holding the device tilted
     private var lastTiltAction = TiltAction.NONE
@@ -26,7 +29,7 @@ class TiltController(private val context: Context) : SensorEventListener {
     private val DEBOUNCE_TIME = 500L // milliseconds
 
     enum class TiltAction {
-        NONE, LEFT, RIGHT
+        NONE, LEFT, RIGHT, FORWARD, BACKWARD
     }
 
     init {
@@ -54,13 +57,15 @@ class TiltController(private val context: Context) : SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-            val x = event.values[0]
+            val x = event.values[0] // Left/Right tilt
+            val y = event.values[1] // Forward/Backward tilt
 
             // Check for tilt actions with debouncing
             val currentTime = System.currentTimeMillis()
 
+            // Handle left/right tilt
             when {
-                x < -TILT_THRESHOLD && abs(x) > abs(event.values[1]) -> {
+                x < -TILT_THRESHOLD && abs(x) > abs(y) -> {
                     // Device is tilted right
                     if (lastTiltAction != TiltAction.RIGHT ||
                         currentTime - lastTiltTimestamp > DEBOUNCE_TIME) {
@@ -69,7 +74,7 @@ class TiltController(private val context: Context) : SensorEventListener {
                         lastTiltTimestamp = currentTime
                     }
                 }
-                x > TILT_THRESHOLD && abs(x) > abs(event.values[1]) -> {
+                x > TILT_THRESHOLD && abs(x) > abs(y) -> {
                     // Device is tilted left
                     if (lastTiltAction != TiltAction.LEFT ||
                         currentTime - lastTiltTimestamp > DEBOUNCE_TIME) {
@@ -78,7 +83,25 @@ class TiltController(private val context: Context) : SensorEventListener {
                         lastTiltTimestamp = currentTime
                     }
                 }
-                abs(x) < 1.0f -> {
+                y < -TILT_FORWARD_BACKWARD_THRESHOLD && abs(y) > abs(x) -> {
+                    // Device is tilted forward
+                    if (lastTiltAction != TiltAction.FORWARD ||
+                        currentTime - lastTiltTimestamp > DEBOUNCE_TIME) {
+                        onTiltForward?.invoke()
+                        lastTiltAction = TiltAction.FORWARD
+                        lastTiltTimestamp = currentTime
+                    }
+                }
+                y > TILT_FORWARD_BACKWARD_THRESHOLD && abs(y) > abs(x) -> {
+                    // Device is tilted backward
+                    if (lastTiltAction != TiltAction.BACKWARD ||
+                        currentTime - lastTiltTimestamp > DEBOUNCE_TIME) {
+                        onTiltBackward?.invoke()
+                        lastTiltAction = TiltAction.BACKWARD
+                        lastTiltTimestamp = currentTime
+                    }
+                }
+                abs(x) < 1.0f && abs(y) < 1.0f -> {
                     // Device is relatively flat, reset tilt state
                     lastTiltAction = TiltAction.NONE
                 }

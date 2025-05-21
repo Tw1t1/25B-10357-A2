@@ -7,14 +7,17 @@ class GameManager(
     val maxLives: Int = 3,
     val rows: Int = 7,
     val lanes: Int = 5,
-    var delay: Long = SLOW_DELAY
+    var delay: Long = MEDIUM_DELAY
 ) {
-    enum class RoadCellType { CAR, EMPTY, ROCK , COIN }
+    enum class RoadCellType { CAR, EMPTY, ROCK, COIN }
     enum class Direction { LEFT, RIGHT }
     enum class GameStatus { OK, CRASHED, BLOCKED, GAME_OVER }
+    enum class SpeedLevel { SLOW, MEDIUM, FAST, VERY_FAST }
 
     companion object {
+        const val VERY_FAST_DELAY: Long = 300
         const val FAST_DELAY: Long = 500
+        const val MEDIUM_DELAY: Long = 750
         const val SLOW_DELAY: Long = 1000
     }
 
@@ -27,6 +30,11 @@ class GameManager(
     var score: Int = 0
 
     var distance: Int = 0
+
+    // Current speed level for UI display
+    private var _currentSpeedLevel: SpeedLevel = SpeedLevel.MEDIUM
+    val currentSpeedLevel: SpeedLevel
+        get() = _currentSpeedLevel
 
     val road: Array<Array<RoadCell>> = Array(rows) {
         Array(lanes) { RoadCell() }
@@ -69,6 +77,51 @@ class GameManager(
 
     fun setDifficulty(isFast: Boolean) {
         delay = if (isFast) FAST_DELAY else SLOW_DELAY
+        _currentSpeedLevel = if (isFast) SpeedLevel.FAST else SpeedLevel.SLOW
+    }
+
+    // New function to increase speed
+    fun increaseSpeed(): Boolean {
+        return when (_currentSpeedLevel) {
+            SpeedLevel.SLOW -> {
+                delay = MEDIUM_DELAY
+                _currentSpeedLevel = SpeedLevel.MEDIUM
+                true
+            }
+            SpeedLevel.MEDIUM -> {
+                delay = FAST_DELAY
+                _currentSpeedLevel = SpeedLevel.FAST
+                true
+            }
+            SpeedLevel.FAST -> {
+                delay = VERY_FAST_DELAY
+                _currentSpeedLevel = SpeedLevel.VERY_FAST
+                true
+            }
+            SpeedLevel.VERY_FAST -> false // Already at max speed
+        }
+    }
+
+    // New function to decrease speed
+    fun decreaseSpeed(): Boolean {
+        return when (_currentSpeedLevel) {
+            SpeedLevel.VERY_FAST -> {
+                delay = FAST_DELAY
+                _currentSpeedLevel = SpeedLevel.FAST
+                true
+            }
+            SpeedLevel.FAST -> {
+                delay = MEDIUM_DELAY
+                _currentSpeedLevel = SpeedLevel.MEDIUM
+                true
+            }
+            SpeedLevel.MEDIUM -> {
+                delay = SLOW_DELAY
+                _currentSpeedLevel = SpeedLevel.SLOW
+                true
+            }
+            SpeedLevel.SLOW -> false // Already at min speed
+        }
     }
 
     fun moveCar(direction: Direction): GameStatus {
